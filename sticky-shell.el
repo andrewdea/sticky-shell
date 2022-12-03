@@ -20,9 +20,28 @@
 
 ;;; Commentary:
 
-;; 
+;; This package provides a minor mode that creates a header in a shell buffer.
+;; The header shows a previous prompt according to the value of
+;; `sticky-shell-get-prompt'.
+;; This is most useful when working with many lines of output:
+;; setting `sticky-shell-get-prompt' to `sticky-shell-prompt-above-visible'
+;; will ensure that the command corresponding to the top output line
+;; is always visible.
+;; The look and properties of the prompt in the header can be changed
+;; by the list of functions in `sticky-shell-prompt-modifiers'
 
 ;;; Code:
+(eval-when-compile
+  (require 'eshell)
+  (require 'comint))
+
+(declare-function eshell-previous-prompt "ext:eshell")
+(declare-function comint-previous-prompt "ext:comint")
+
+(defgroup sticky-shell nil
+  "Display a sticky header with latest shell-prompt."
+  :group 'terminals)
+
 
 (defcustom sticky-shell-get-prompt
   #'sticky-shell-prompt-above-visible
@@ -31,16 +50,21 @@ Available values are: `sticky-shell-latest-prompt',
 `sticky-shell-prompt-above-visible',
 `sticky-shell-prompt-above-cursor',
 `sticky-shell-prompt-before-cursor'
-or you can write your own function and assign it to this variable.")
+or you can write your own function and assign it to this variable."
+  :group 'sticky-shell
+  :type 'function)
 
 (defcustom sticky-shell-prompt-modifiers
   ()
-  "List of functions modifying the prompt before it is displayed in the header.")
-
-(defun apply-all (fns arg)
-  (if fns
-      (apply (car fns) (list (apply-all (cdr fns) arg)))
-    arg))
+  "List of functions modifying the prompt before it is displayed in the header.
+`sticky-shell-modified-prompt' is responsible for applying these functions.
+Note that since these are applied inside a `thread-fist' macro,
+they can be quoted functions, or quoted forms missing the first argument
+eg: (#'upcase (propertize 'face 'minibuffer-prompt)).
+Properties should be set last
+\(ie the `propertize' function should be first in the list)."
+  :group 'sticky-shell
+  :type 'list)
 
 (defun sticky-shell-prompt-current-line ()
   "Return the current line and remove the trailing newline char."
@@ -90,11 +114,11 @@ this is the prompt that will be returned."
       (comint-previous-prompt 1))
     (sticky-shell-prompt-current-line)))
 
-(defmacro get-prompt-and-modify ()
-  "TBD
-Note that you can't pass lambdas here, and each function needs to accept the (modified) prompt as its final argument"
+(defmacro sticky-shell-modified-prompt ()
+  "Get the prompt, modify it, and return it.
+Using `sticky-shell-get-prompt' and `sticky-shell-prompt-modifiers'"
   (if sticky-shell-prompt-modifiers
-      `(thread-last
+      `(thread-first
          (funcall sticky-shell-get-prompt)
          ,@sticky-shell-prompt-modifiers)
     (funcall sticky-shell-get-prompt)))
@@ -107,7 +131,7 @@ Note that you can't pass lambdas here, and each function needs to accept the (mo
   (if sticky-shell-mode
       (setq-local header-line-format
                   (list '(:eval
-                          (get-prompt-and-modify))))
+                          (sticky-shell-modified-prompt))))
     (setq-local header-line-format nil)))
 
 (provide 'sticky-shell)
