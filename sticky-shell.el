@@ -3,6 +3,10 @@
 ;; Copyright (C) 2022  Andrew De Angelis
 
 ;; Author: Andrew De Angelis <bobodeangelis@gmail.com>
+;; Maintainer: Andrew De Angelis <bobodeangelis@gmail.com>
+;; URL: https://github.com/andyjda/sticky-shell
+;; Version: 0.01.0
+;; Package-Requires: ((eshell "2.4.2"))
 ;; Keywords: processes, terminals, tools
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -60,7 +64,7 @@ or you can write your own function and assign it to this variable."
 `sticky-shell-modified-prompt' is responsible for applying these functions.
 Note that since these are applied inside a `thread-fist' macro,
 they can be quoted functions, or quoted forms missing the first argument
-eg: (#'upcase (propertize 'face 'minibuffer-prompt)).
+eg: (#\\='upcase (propertize \\='face \\='minibuffer-prompt)).
 Properties should be set last
 \(ie the `propertize' function should be first in the list)."
   :group 'sticky-shell
@@ -123,6 +127,7 @@ Using `sticky-shell-get-prompt' and `sticky-shell-prompt-modifiers'"
          ,@sticky-shell-prompt-modifiers)
     (funcall sticky-shell-get-prompt)))
 
+;;;###autoload
 (define-minor-mode sticky-shell-mode
   "Minor mode to show the previous prompt as a sticky header."
   :group 'comint
