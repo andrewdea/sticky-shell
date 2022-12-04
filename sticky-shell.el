@@ -61,12 +61,8 @@ or you can write your own function and assign it to this variable."
 (defcustom sticky-shell-prompt-modifiers
   ()
   "List of functions modifying the prompt before it is displayed in the header.
-`sticky-shell-modified-prompt' is responsible for applying these functions.
-Note that since these are applied inside a `thread-fist' macro,
-they can be quoted functions, or quoted forms missing the first argument
-eg: (#\\='upcase (propertize \\='face \\='minibuffer-prompt)).
-Properties should be set last
-\(ie the `propertize' function should be first in the list)."
+See `sticky-shell-modified-prompt' for an explanation
+on how the functions are applied."
   :group 'sticky-shell
   :type 'list)
 
@@ -120,7 +116,19 @@ this is the prompt that will be returned."
 
 (defmacro sticky-shell-modified-prompt ()
   "Get the prompt, modify it, and return it.
-Using `sticky-shell-get-prompt' and `sticky-shell-prompt-modifiers'"
+Using `sticky-shell-get-prompt' and `sticky-shell-prompt-modifiers'.
+The functions are applied in the order they appear in the list.
+Note that since they are applied inside a `thread-first' macro,
+they can be quoted functions accepting a single argument,
+or quoted forms missing the first argument.
+During evaluation, the argument will be the prompt.
+eg: (#\\='upcase (propertize \\='face \\='minibuffer-prompt))
+macro-expands to:
+
+\(propertize
+ (upcase
+  (funcall sticky-shell-get-prompt))
+ \\='face \\='minibuffer-prompt)"
   (if sticky-shell-prompt-modifiers
       `(thread-first
          (funcall sticky-shell-get-prompt)
