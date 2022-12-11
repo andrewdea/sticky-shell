@@ -5,7 +5,7 @@
 ;; Author: Andrew De Angelis <bobodeangelis@gmail.com>
 ;; Maintainer: Andrew De Angelis <bobodeangelis@gmail.com>
 ;; URL: https://github.com/andyjda/sticky-shell
-;; Version: 0.01.0
+;; Version: 1.0.0
 ;; Package-Requires: ((eshell "2.4.2"))
 ;; Keywords: processes, terminals, tools
 
@@ -29,7 +29,7 @@
 ;; `sticky-shell-get-prompt'.
 ;; This is most useful when working with many lines of output:
 ;; setting `sticky-shell-get-prompt' to `sticky-shell-prompt-above-visible'
-;; will ensure that the command corresponding to the top output line
+;; will ensure that the command corresponding to the top output-line
 ;; is always visible.
 ;; The look and properties of the prompt in the header can be changed
 ;; by the list of functions in `sticky-shell-prompt-modifiers'
