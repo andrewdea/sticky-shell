@@ -1,18 +1,6 @@
 #+TITLE: README
 * Use
 In any shell within Emacs, run *M-x* /sticky-shell-mode/.
-** screenshots
-#+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
-#+NAME:   fig:make
-[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make.png]]
-
-#+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
-#+NAME:   fig:make-clean
-[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make_clean.png]]
-
-#+CAPTION: Running *eshell* using `sticky-shell-prompt-above-visible' and `sticky-shell-prompt-modifiers'
-#+NAME:   fig:prompt modifiers
-[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/prompt_modifiers.png]]
 
 The mode should work in any shell that inherits from `eshell-mode' or `comint-mode'. This includes most language-interpreters (Python, Clojure, etc), I could try. If you find a shell for which the mode doesn't work, please let me know.
 * Install
@@ -39,10 +27,26 @@ The main customizable variables are: `sticky-shell-get-prompt' and `sticky-shell
 
    You can also write your own function and assign it to this variable.
  - `sticky-shell-prompt-modifiers' are functions modifying the prompt before it is displayed
- For example, in the screenshots above, `sticky-shell-get-prompt' is set to the default value of `sticky-shell-prompt-above-visible', while `sticky-shell-prompt-modifiers' is set to the default *nil* in the first two screenshots, and to
+
+    For example, in the screenshots below, `sticky-shell-get-prompt' is set to the default value of `sticky-shell-prompt-above-visible', while `sticky-shell-prompt-modifiers' is set to the default *nil* in the first two screenshots, and to
      #+begin_src emacs-lisp
       (setq sticky-shell-prompt-modifiers (list #'upcase '(propertize 'face 'minibuffer-prompt)))
      #+end_src
-      in the third screenshot
+      in the third screenshot.
+* Screenshots
+#+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
+#+NAME:   fig:make
+[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make.png]]
+
+#+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
+#+NAME:   fig:make-clean
+[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make_clean.png]]
+A comint shell using `sticky-shell-prompt-above-visible'
+
+#+CAPTION: Running *eshell* using `sticky-shell-prompt-above-visible' and `sticky-shell-prompt-modifiers'
+#+NAME:   fig:prompt modifiers
+[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/prompt_modifiers.png]]
+An eshell using `sticky-shell-prompt-above-visible' and `sticky-shell-prompt-modifiers'
+
 * Contribute/Issues
 Please contact me here if you'd like to add features or if you encounter any issues while using this package.
