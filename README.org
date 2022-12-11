@@ -8,13 +8,13 @@ The package will be added to (M)ELPA soon. Until then:
  1. Clone this repo
  2. Add this to your init file:
     #+begin_src emacs-lisp
-      (add-to-list 'load-path "~/path-to/sticky-shell/")
+      (add-to-list 'load-path "your-path-to/sticky-shell/")
     #+end_src
 
  3. Or, if you use use-package:
     #+begin_src emacs-lisp
       (use-package sticky-shell
-        :load-path "custom/packages/sticky-shell/")
+        :load-path "your-path-to/sticky-shell/")
      #+end_src
 * Customize
 The main customizable variables are: `sticky-shell-get-prompt' and `sticky-shell-prompt-modifiers'
