@@ -9,7 +9,7 @@
 * Use
 In any shell within Emacs, run *M-x* /sticky-shell-mode/.
 
-The mode should work in any shell that inherits from `eshell-mode' or `comint-mode'. This includes most language-interpreters (Python, Clojure, etc), I could try. If you find a shell for which the mode doesn't work, please let me know.
+The mode should work in any shell that inherits from `eshell-mode' or `comint-mode'. This includes most language-interpreters I could try (Python, Clojure, etc). If you find a shell for which the mode doesn't work, please let me know.
 * Install
 The package will be added to (M)ELPA soon. Until then:
  1. Clone this repo
