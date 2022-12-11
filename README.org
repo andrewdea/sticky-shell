@@ -4,15 +4,15 @@ In any shell within Emacs, run *M-x* /sticky-shell-mode/.
 ** screenshots
 #+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
 #+NAME:   fig:make
-[[~/Desktop/make.png]]
+[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make.png]]
 
 #+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
 #+NAME:   fig:make-clean
-[[~/Desktop/make_clean.png]]
+[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make_clean.png]]
 
 #+CAPTION: Running *eshell* using `sticky-shell-prompt-above-visible' and `sticky-shell-prompt-modifiers'
 #+NAME:   fig:prompt modifiers
-[[~/Desktop/prompt_modifiers.png]]
+[[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/prompt_modifiers.png]]
 
 The mode should work in any shell that inherits from `eshell-mode' or `comint-mode'. This includes most language-interpreters (Python, Clojure, etc), I could try. If you find a shell for which the mode doesn't work, please let me know.
 * Install
