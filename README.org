@@ -1,4 +1,11 @@
 #+TITLE: README
+* Table of Contents :TOC:
+- [[#use][Use]]
+- [[#install][Install]]
+- [[#customize][Customize]]
+- [[#screenshots][Screenshots]]
+- [[#contributeissues][Contribute/Issues]]
+
 * Use
 In any shell within Emacs, run *M-x* /sticky-shell-mode/.
 
