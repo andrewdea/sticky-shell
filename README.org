@@ -35,7 +35,8 @@ The main customizable variables are: `sticky-shell-get-prompt' and `sticky-shell
    - `sticky-shell-prompt-above-visible',
    - `sticky-shell-prompt-above-cursor',
    - `sticky-shell-prompt-before-cursor'
-   (see the functions' doc strings for a detailed explanation)
+   (see the functions' doc strings for a detailed explanation).
+
    You can also write your own function and assign it to this variable.
  - `sticky-shell-prompt-modifiers' are functions modifying the prompt before it is displayed
  For example, in the screenshots above, `sticky-shell-get-prompt' is set to the default value of `sticky-shell-prompt-above-visible', while `sticky-shell-prompt-modifiers' is set to the default *nil* in the first two screenshots, and to
