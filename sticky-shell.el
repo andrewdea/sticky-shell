@@ -66,11 +66,10 @@ on how the functions are applied."
   :group 'sticky-shell
   :type 'list)
 
-(defun sticky-shell-prompt-current-line ()
-  "Return the current line and remove the trailing newline char."
-  (let ((prompt (thing-at-point 'line)))
-    (aset prompt (- (length prompt) 1) 0) ; remove the newline ending char
-    prompt))
+(defun sticky-shell-current-line-trimmed ()
+  "Return the current line and remove trailing whitespace."
+  (let ((prompt (or (thing-at-point 'line) "")))
+    (string-trim-right prompt "[ \t\n\r]+"))) ; remove the newline ending char
 
 (defun sticky-shell-latest-prompt ()
   "Get the latest prompt that was run."
@@ -81,7 +80,7 @@ on how the functions are applied."
     (if (derived-mode-p 'eshell-mode)
         (eshell-previous-prompt 1)
       (comint-previous-prompt 1))
-    (sticky-shell-prompt-current-line)))
+    (sticky-shell-current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-visible ()
   "Get the prompt above the top visible line in the current window."
@@ -91,7 +90,7 @@ on how the functions are applied."
     (if (derived-mode-p 'eshell-mode)
         (eshell-previous-prompt 1)
       (comint-previous-prompt 1))
-    (sticky-shell-prompt-current-line)))
+    (sticky-shell-current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-cursor ()
   "Get the prompt above the cursor's current line."
@@ -101,7 +100,7 @@ on how the functions are applied."
     (if (derived-mode-p 'eshell-mode)
         (eshell-previous-prompt 1)
       (comint-previous-prompt 1))
-    (sticky-shell-prompt-current-line)))
+    (sticky-shell-current-line-trimmed)))
 
 (defun sticky-shell-prompt-before-cursor ()
   "Get the prompt before the cursor's current location.
@@ -112,7 +111,7 @@ this is the prompt that will be returned."
     (if (derived-mode-p 'eshell-mode)
         (eshell-previous-prompt 1)
       (comint-previous-prompt 1))
-    (sticky-shell-prompt-current-line)))
+    (sticky-shell-current-line-trimmed)))
 
 (defmacro sticky-shell-modified-prompt ()
   "Get the prompt, modify it, and return it.
