@@ -31,8 +31,6 @@
 ;; setting `sticky-shell-get-prompt' to `sticky-shell-prompt-above-visible'
 ;; will ensure that the command corresponding to the top output-line
 ;; is always visible.
-;; The look and properties of the prompt in the header can be changed
-;; by the list of functions in `sticky-shell-prompt-modifiers'
 
 ;;; Code:
 (eval-when-compile
@@ -58,13 +56,6 @@ or you can write your own function and assign it to this variable."
   :group 'sticky-shell
   :type 'function)
 
-(defcustom sticky-shell-prompt-modifiers
-  ()
-  "List of functions modifying the prompt before it is displayed in the header.
-See `sticky-shell-modified-prompt' for an explanation
-on how the functions are applied."
-  :group 'sticky-shell
-  :type 'list)
 
 (defun sticky-shell-current-line-trimmed ()
   "Return the current line and remove trailing whitespace."
@@ -83,7 +74,7 @@ on how the functions are applied."
     (sticky-shell-current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-visible ()
-  "Get the prompt above the top visible line in the current window."
+  "Get the prompt above the top visible-line in the current window."
   (interactive)
   (save-excursion
     (goto-char (window-start))
@@ -113,37 +104,17 @@ this is the prompt that will be returned."
       (comint-previous-prompt 1))
     (sticky-shell-current-line-trimmed)))
 
-(defmacro sticky-shell-modified-prompt ()
-  "Get the prompt, modify it, and return it.
-Using `sticky-shell-get-prompt' and `sticky-shell-prompt-modifiers'.
-The functions are applied in the order they appear in the list.
-Note that since they are applied inside a `thread-first' macro,
-they can be quoted functions accepting a single argument,
-or quoted forms missing the first argument.
-During evaluation, the argument will be the prompt.
-eg: (#\\='upcase (propertize \\='face \\='minibuffer-prompt))
-macro-expands to:
-
-\(propertize
- (upcase
-  (funcall sticky-shell-get-prompt))
- \\='face \\='minibuffer-prompt)"
-  (if sticky-shell-prompt-modifiers
-      `(thread-first
-         (funcall sticky-shell-get-prompt)
-         ,@sticky-shell-prompt-modifiers)
-    (funcall sticky-shell-get-prompt)))
-
 ;;;###autoload
 (define-minor-mode sticky-shell-mode
-  "Minor mode to show the previous prompt as a sticky header."
+  "Minor mode to show the previous prompt as a sticky header.
+Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
   :group 'comint
   :global nil
   :lighter nil
   (if sticky-shell-mode
       (setq-local header-line-format
                   (list '(:eval
-                          (sticky-shell-modified-prompt))))
+                          (funcall sticky-shell-get-prompt))))
     (setq-local header-line-format nil)))
 
 (provide 'sticky-shell)
