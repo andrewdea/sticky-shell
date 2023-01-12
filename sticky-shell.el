@@ -60,7 +60,15 @@ or you can write your own function and assign it to this variable."
 (defun sticky-shell-current-line-trimmed ()
   "Return the current line and remove trailing whitespace."
   (let ((prompt (or (thing-at-point 'line) "")))
-    (string-trim-right prompt "[ \t\n\r]+"))) ; remove the newline ending char
+    (string-trim-right prompt "[ \t\n\r]+"))) ; remove whitespace at the end of the line
+
+(defun sticky-shell-previous-prompt (n)
+  "Move to end of Nth previous prompt in the buffer.
+Depending on the current mode, call `comint-previous-prompt'
+or `eshell-previous-prompt'."
+  (if (derived-mode-p 'eshell-mode)
+      (eshell-previous-prompt n)
+    (comint-previous-prompt n)))
 
 (defun sticky-shell-latest-prompt ()
   "Get the latest prompt that was run."
@@ -68,19 +76,16 @@ or you can write your own function and assign it to this variable."
   (save-excursion
     (goto-char (point-max))
     (forward-line -1)
-    (if (derived-mode-p 'eshell-mode)
-        (eshell-previous-prompt 1)
-      (comint-previous-prompt 1))
+    (sticky-shell-previous-prompt 1)
     (sticky-shell-current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-visible ()
-  "Get the prompt above the top visible-line in the current window."
+  "Get the prompt above the top visible line in the current window.
+This ensures that the prompt in the header corresponds to top output-line"
   (interactive)
   (save-excursion
     (goto-char (window-start))
-    (if (derived-mode-p 'eshell-mode)
-        (eshell-previous-prompt 1)
-      (comint-previous-prompt 1))
+    (sticky-shell-previous-prompt 1)
     (sticky-shell-current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-cursor ()
@@ -88,20 +93,7 @@ or you can write your own function and assign it to this variable."
   (interactive)
   (save-excursion
     (move-beginning-of-line 1)
-    (if (derived-mode-p 'eshell-mode)
-        (eshell-previous-prompt 1)
-      (comint-previous-prompt 1))
-    (sticky-shell-current-line-trimmed)))
-
-(defun sticky-shell-prompt-before-cursor ()
-  "Get the prompt before the cursor's current location.
-This means that if the cursor is inside a prompt (even as it is being written),
-this is the prompt that will be returned."
-  (interactive)
-  (save-excursion
-    (if (derived-mode-p 'eshell-mode)
-        (eshell-previous-prompt 1)
-      (comint-previous-prompt 1))
+    (sticky-shell-previous-prompt 1)
     (sticky-shell-current-line-trimmed)))
 
 ;;;###autoload
