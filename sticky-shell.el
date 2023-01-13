@@ -127,7 +127,7 @@ This ensures that the prompt in the header corresponds to top output-line"
   :group 'sticky-shell
   :global t
   :lighter nil
-  (if (and sticky-shell-abbrev-header-mode sticky-shell-mode)
+  (if sticky-shell-abbrev-header-mode
       (advice-add sticky-shell-get-prompt :filter-return #'sticky-shell-abbrev-header)
     (advice-remove sticky-shell-get-prompt #'sticky-shell-abbrev-header)))
 
