@@ -126,9 +126,10 @@ This ensures that the prompt in the header corresponds to top output-line"
                  `(:eval (sticky-shell-fit-within-line ,header-func)))))
 
 (defmacro sticky-shell-restore-header ()
-  `(let ((header-func (cadadr header-line-format)))
-     (setq-local header-line-format
-                 `(:eval ,header-func))))
+  `(when (eq (caadr header-line-format) #'sticky-shell-fit-within-line)
+     (let ((header-func (cadadr header-line-format)))
+       (setq-local header-line-format
+                   `(:eval ,header-func)))))
 
 ;; TODO: trying to determine what the best approach for this is
 ;; ideally, one could
