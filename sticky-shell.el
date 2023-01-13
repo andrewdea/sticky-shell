@@ -99,7 +99,7 @@ This ensures that the prompt in the header corresponds to top output-line"
     (sticky-shell-current-line-trimmed)))
 
 ;;;; shorten header
-(defun sticky-shell-shorten-header (header)
+(defun sticky-shell-fit-within-line (header)
   (let* ((max-chars-per-line (window-max-chars-per-line))
          (header-length (length header))
          (diff (- header-length max-chars-per-line)))
@@ -122,15 +122,15 @@ This ensures that the prompt in the header corresponds to top output-line"
 ;; 3) have it on only in specific buffers
 ;; making its own minor mode achieves 1 and 2 (2 could be done by running a `sticky-shell-mode-hook')
 ;; but using an advice strategy makes it so that it cannot be local 🤔🤔🤔🤔🤔🤔
-
-;; (define-minor-mode sticky-shell-shorten-header-mode
-;;   "Minor mode to shorten the header, making the beginning and end both visible."
-;;   :group 'sticky-shell
-;;   :global t
-;;   :lighter nil
-;;   (if sticky-shell-shorten-header-mode
-;;       (advice-add sticky-shell-get-prompt :filter-return #'sticky-shell-shorten-header)
-;;     (advice-remove sticky-shell-get-prompt #'sticky-shell-shorten-header)))
+;; this solution works but it feels quite hacky
+;; especially the fact that I have to disable `sticky-shell-shorten-header-mode'
+;; from within `sticky-shell-mode'
+;; TODO: will look into ways to fix this:
+;; there should be a way to tie "child modes" to their "parents"
+(defmacro sticky-shell-shorten-header ()
+  `(let ((header-func (cadr header-line-format)))
+     (setq-local header-line-format
+                 `(:eval (sticky-shell-fit-within-line ,header-func)))))
 
 (define-minor-mode sticky-shell-shorten-header-mode
   "Minor mode to shorten the header, making the beginning and end both visible."
@@ -139,17 +139,13 @@ This ensures that the prompt in the header corresponds to top output-line"
   :lighter nil
   (if sticky-shell-mode
       (if sticky-shell-shorten-header-mode
-          (setq-local header-line-format
-                      '(:eval
-                        (sticky-shell-shorten-header
-                         (funcall sticky-shell-get-prompt))))
-        (setq-local header-line-format
-                    '(:eval
-                      (funcall sticky-shell-get-prompt))))
+          (sticky-shell-shorten-header)
+        (sticky-shell-mode +1)) ; when disabling shorten mode, reset the header
     (progn
       (message
        "`sticky-shell-mode' is not active; cannot enable `sticky-shell-shorten-header-mode'")
       (setq-local sticky-shell-shorten-header-mode nil))))
+
 
 ;;;###autoload
 (define-minor-mode sticky-shell-mode
@@ -160,7 +156,7 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
   :lighter nil
   (if sticky-shell-mode
       (setq-local header-line-format
-                  '(:eval
+                  '(:eval ; question: why do we use :eval instead of eval here??
                     (funcall sticky-shell-get-prompt)))
     (progn
       (setq-local header-line-format nil)
