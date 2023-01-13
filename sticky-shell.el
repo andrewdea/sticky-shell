@@ -115,6 +115,13 @@ This ensures that the prompt in the header corresponds to top output-line"
                               (/ diff 2))
                            3))))))
 
+;; TODO: trying to determine what the best approach for this is
+;; ideally, one could
+;; 1) switch it on/off at will
+;; 2) set it up so that sticky-shell-mode automatically sets it off
+;; 3) have it on only in specific buffers
+;; making its own minor mode achieves 1 and 2 (2 could be done by running a `sticky-shell-mode-hook')
+;; but using an advice strategy makes it so that it cannot be local 🤔🤔🤔🤔🤔🤔
 (define-minor-mode sticky-shell-abbrev-header-mode
   "Minor mode to shorten the header, making the beginning and end both visible."
   :group 'sticky-shell
