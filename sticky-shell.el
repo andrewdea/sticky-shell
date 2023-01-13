@@ -6,7 +6,7 @@
 ;; Maintainer: Andrew De Angelis <bobodeangelis@gmail.com>
 ;; URL: https://github.com/andyjda/sticky-shell
 ;; Version: 1.0.0
-;; Package-Requires: ((eshell "2.4.2"))
+;; Package-Requires: ((emacs "24.4"))
 ;; Keywords: processes, terminals, tools
 
 ;; This program is free software; you can redistribute it and/or modify
