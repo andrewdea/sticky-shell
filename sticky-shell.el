@@ -162,7 +162,10 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
       (setq-local header-line-format
                   '(:eval
                     (funcall sticky-shell-get-prompt)))
-    (setq-local header-line-format nil)))
+    (progn
+      (setq-local header-line-format nil)
+      (if sticky-shell-abbrev-header-mode
+          (sticky-shell-abbrev-header-mode -1)))))
 
 (provide 'sticky-shell)
 ;;; sticky-shell.el ends here
