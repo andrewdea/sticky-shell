@@ -107,7 +107,7 @@ This ensures that the prompt in the header corresponds to top output-line"
         header
       (format "%s%s%s"
               (seq-take header
-                        (- (/ header-length 2) ; this ratio could be made customizable if needed?
+                        (- (/ header-length 2)
                            (/ diff 2)))
               (propertize "..." 'face 'default) ; could be a customizable face
               (seq-drop header
@@ -124,6 +124,7 @@ This ensures that the prompt in the header corresponds to top output-line"
 ;; 1) switch it on/off at will
 ;; 2) set it up so that sticky-shell-mode automatically sets it on
 ;; 3) have it on only in specific buffers
+;; 4) automatically setting it off when disabling sticky-shell-mode
 ;; making its own minor mode achieves 1 and 2 (2 could be done by running a `sticky-shell-mode-hook')
 ;; but using an advice strategy makes it so that it cannot be local 🤔🤔🤔🤔🤔🤔
 ;; this solution works but it feels quite hacky
@@ -157,10 +158,7 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
       (setq-local header-line-format
                   '(:eval ; question: why do we use :eval instead of `eval' here??
                     (funcall sticky-shell-get-prompt)))
-    (progn
-      (setq-local header-line-format nil)
-      (if sticky-shell-shorten-header-mode
-          (sticky-shell-shorten-header-mode -1)))))
+    (setq-local header-line-format nil)))
 
 (provide 'sticky-shell)
 ;;; sticky-shell.el ends here
