@@ -122,14 +122,34 @@ This ensures that the prompt in the header corresponds to top output-line"
 ;; 3) have it on only in specific buffers
 ;; making its own minor mode achieves 1 and 2 (2 could be done by running a `sticky-shell-mode-hook')
 ;; but using an advice strategy makes it so that it cannot be local 🤔🤔🤔🤔🤔🤔
+
+;; (define-minor-mode sticky-shell-abbrev-header-mode
+;;   "Minor mode to shorten the header, making the beginning and end both visible."
+;;   :group 'sticky-shell
+;;   :global t
+;;   :lighter nil
+;;   (if sticky-shell-abbrev-header-mode
+;;       (advice-add sticky-shell-get-prompt :filter-return #'sticky-shell-abbrev-header)
+;;     (advice-remove sticky-shell-get-prompt #'sticky-shell-abbrev-header)))
+
 (define-minor-mode sticky-shell-abbrev-header-mode
   "Minor mode to shorten the header, making the beginning and end both visible."
   :group 'sticky-shell
-  :global t
+  :global nil
   :lighter nil
-  (if sticky-shell-abbrev-header-mode
-      (advice-add sticky-shell-get-prompt :filter-return #'sticky-shell-abbrev-header)
-    (advice-remove sticky-shell-get-prompt #'sticky-shell-abbrev-header)))
+  (if sticky-shell-mode
+      (if sticky-shell-abbrev-header-mode
+          (setq-local header-line-format
+                      (list '(:eval
+                              (sticky-shell-abbrev-header
+                               (funcall sticky-shell-get-prompt)))))
+        (setq-local header-line-format
+                    (list '(:eval
+                            (funcall sticky-shell-get-prompt)))))
+    (progn
+      (message
+       "`sticky-shell-mode' is not active; cannot enable `sticky-shell-abbrev-header-mode'")
+      (setq-local sticky-shell-abbrev-header-mode nil))))
 
 ;;;###autoload
 (define-minor-mode sticky-shell-mode
