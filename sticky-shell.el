@@ -105,15 +105,15 @@ This ensures that the prompt in the header corresponds to top output-line"
          (diff (- header-length max-chars-per-line)))
     (if (<= diff 0)
         header
-      (concat
-       (seq-take header
-                 (- (/ header-length 2) ;; this ratio could be made customizable if needed?
-                    (/ diff 2)))
-       "..."
-       (seq-drop header
-                 (+ (+ (/ (length header) 2)
-                       (/ diff 2))
-                    3))))))
+      (format "%s%s%s"
+              (seq-take header
+                        (- (/ header-length 2) ; this ratio could be made customizable if needed?
+                           (/ diff 2)))
+              (propertize "..." 'face 'default) ; could be a customizable face
+              (seq-drop header
+                        (+ (+ (/ (length header) 2)
+                              (/ diff 2))
+                           3))))))
 
 (define-minor-mode sticky-shell-abbrev-header-mode
   "Minor mode to shorten the header, making the beginning and end both visible."
