@@ -60,7 +60,8 @@ or you can write your own function and assign it to this variable."
 (defun sticky-shell-current-line-trimmed ()
   "Return the current line and remove trailing whitespace."
   (let ((prompt (or (thing-at-point 'line) "")))
-    (string-trim-right prompt "[ \t\n\r]+"))) ; remove whitespace at the end of the line
+    ;; remove whitespace at the end of the line:
+    (string-trim-right prompt "[ \t\n\r]+")))
 
 (defun sticky-shell-previous-prompt (n)
   "Move to end of Nth previous prompt in the buffer.
