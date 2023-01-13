@@ -140,12 +140,12 @@ This ensures that the prompt in the header corresponds to top output-line"
   (if sticky-shell-mode
       (if sticky-shell-abbrev-header-mode
           (setq-local header-line-format
-                      (list '(:eval
-                              (sticky-shell-abbrev-header
-                               (funcall sticky-shell-get-prompt)))))
+                      '(:eval
+                        (sticky-shell-abbrev-header
+                         (funcall sticky-shell-get-prompt))))
         (setq-local header-line-format
-                    (list '(:eval
-                            (funcall sticky-shell-get-prompt)))))
+                    '(:eval
+                      (funcall sticky-shell-get-prompt))))
     (progn
       (message
        "`sticky-shell-mode' is not active; cannot enable `sticky-shell-abbrev-header-mode'")
