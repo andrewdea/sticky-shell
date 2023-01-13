@@ -47,7 +47,7 @@
 
 (defcustom sticky-shell-get-prompt
   #'sticky-shell-prompt-above-visible
-  "Function used by sticky-shell-mode to pick the prompt to show in the header.
+  "Function used by `sticky-shell-mode' to pick the prompt to show in the header.
 Available values are: `sticky-shell-latest-prompt',
 `sticky-shell-prompt-above-visible',
 `sticky-shell-prompt-above-cursor',
