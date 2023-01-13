@@ -6,7 +6,7 @@
 ;; Maintainer: Andrew De Angelis <bobodeangelis@gmail.com>
 ;; URL: https://github.com/andyjda/sticky-shell
 ;; Version: 1.0.0
-;; Package-Requires: ((emacs "24.4"))
+;; Package-Requires: ((emacs "25.1"))
 ;; Keywords: processes, terminals, tools
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -105,57 +105,65 @@ This ensures that the prompt in the header corresponds to top output-line"
 
 ;;;; shorten header
 (defun sticky-shell-fit-within-line (header)
+  "Shorten HEADER, ensuring its beginning and end are visible within the line.
+The shortening logic is:
+ - if the header already fits in the available space in the line:
+   don't do anything
+ - else:
+ - get the difference between the header and the `window-max-chars-per-line'
+ - divide the header in two
+ - from each header-half, remove half of the difference (in characters)
+ - now our header fits the line
+ - add an ellipsis (\"...\") between the two halves
+ - remove three chars from the second half to make room for the ellipsis
+The \"...\" is propertized with the face `sticky-shell-shorten-header-ellipsis'"
   (let* ((max-chars-per-line (window-max-chars-per-line))
          (header-length (length header))
          (diff (- header-length max-chars-per-line)))
     (if (<= diff 0)
         header
       (format "%s%s%s"
+              ;; first half of the header, minus half the difference
               (seq-take header
                         (- (/ header-length 2)
                            (/ diff 2)))
               (propertize "..." 'face 'sticky-shell-shorten-header-ellipsis)
+              ;; second half of the header, minus half the difference
+              ;; and making room for the three dots
               (seq-drop header
                         (+ (+ (/ (length header) 2)
                               (/ diff 2))
                            3))))))
 
 (defmacro sticky-shell-shorten-header ()
-  `(let ((header-func (cadr header-line-format)))
+  "Apply `sticky-shell-fit-within-line' to `header-line-format'.
+`header-line-format' should look like this:
+\(:eval (funcall sticky-shell-get-prompt)),
+so we take the part after `eval'
+and wrap it within `sticky-shell-fit-within-line'"
+  `(let ((header-function (cadr header-line-format)))
      (setq-local header-line-format
-                 `(:eval (sticky-shell-fit-within-line ,header-func)))))
+                 `(:eval (sticky-shell-fit-within-line ,header-function)))))
 
 (defmacro sticky-shell-restore-header ()
+  "Remove `sticky-shell-fit-within-line' from `header-line-format'."
   `(when (eq (caadr header-line-format) #'sticky-shell-fit-within-line)
-     (let ((header-func (cadadr header-line-format)))
+     (let ((header-function (cadadr header-line-format)))
        (setq-local header-line-format
-                   `(:eval ,header-func)))))
+                   `(:eval ,header-function)))))
 
-;; TODO: trying to determine what the best approach for this is
-;; ideally, one could
-;; 1) switch it on/off at will
-;; 2) set it up so that sticky-shell-mode automatically sets it on
-;; 3) have it on only in specific buffers
-;; 4) automatically setting it off when disabling sticky-shell-mode
-;; making its own minor mode achieves 1 and 2 (2 could be done by running a `sticky-shell-mode-hook')
-;; but using an advice strategy makes it so that it cannot be local 🤔🤔🤔🤔🤔🤔
-;; this solution works but it feels quite hacky
-;; especially the fact that I have to disable `sticky-shell-shorten-header-mode'
-;; from within `sticky-shell-mode'
-;; TODO: will look into ways to fix this:
-;; there should be a way to tie "child modes" to their "parents"
 (define-minor-mode sticky-shell-shorten-header-mode
   "Minor mode to shorten the header, making the beginning and end both visible."
   :group 'sticky-shell
   :global nil
   :lighter nil
-  (if sticky-shell-mode
+  (if (bound-and-true-p sticky-shell-mode)
       (if sticky-shell-shorten-header-mode
           (sticky-shell-shorten-header)
         (sticky-shell-restore-header))
     (progn
       (message
-       "`sticky-shell-mode' is not active; cannot enable `sticky-shell-shorten-header-mode'")
+       "Cannot enable `sticky-shell-shorten-header-mode' while `sticky-shell-mode' is disabled")
       (setq-local sticky-shell-shorten-header-mode nil))))
 
 
