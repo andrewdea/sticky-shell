@@ -56,6 +56,11 @@ or you can write your own function and assign it to this variable."
   :group 'sticky-shell
   :type 'function)
 
+(defface sticky-shell-shorten-header-ellipsis
+  '((t :inherit default))
+  "Face used for the ellipsis shortening the sticky-shell header."
+  :group 'sticky-shell)
+
 ;;;; helper functions
 (defun sticky-shell-current-line-trimmed ()
   "Return the current line and remove trailing whitespace."
@@ -109,7 +114,7 @@ This ensures that the prompt in the header corresponds to top output-line"
               (seq-take header
                         (- (/ header-length 2)
                            (/ diff 2)))
-              (propertize "..." 'face 'default) ; could be a customizable face
+              (propertize "..." 'face 'sticky-shell-shorten-header-ellipsis)
               (seq-drop header
                         (+ (+ (/ (length header) 2)
                               (/ diff 2))
@@ -119,6 +124,12 @@ This ensures that the prompt in the header corresponds to top output-line"
   `(let ((header-func (cadr header-line-format)))
      (setq-local header-line-format
                  `(:eval (sticky-shell-fit-within-line ,header-func)))))
+
+(defmacro sticky-shell-restore-header ()
+  `(let ((header-func (cadadr header-line-format)))
+     (setq-local header-line-format
+                 `(:eval ,header-func))))
+
 ;; TODO: trying to determine what the best approach for this is
 ;; ideally, one could
 ;; 1) switch it on/off at will
@@ -140,7 +151,7 @@ This ensures that the prompt in the header corresponds to top output-line"
   (if sticky-shell-mode
       (if sticky-shell-shorten-header-mode
           (sticky-shell-shorten-header)
-        (sticky-shell-mode +1)) ; when disabling shorten mode, reset the header
+        (sticky-shell-restore-header))
     (progn
       (message
        "`sticky-shell-mode' is not active; cannot enable `sticky-shell-shorten-header-mode'")
@@ -158,7 +169,8 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
       (setq-local header-line-format
                   '(:eval ; question: why do we use :eval instead of `eval' here??
                     (funcall sticky-shell-get-prompt)))
-    (setq-local header-line-format nil)))
+    (setq-local header-line-format nil
+                sticky-shell-shorten-header-mode nil)))
 
 (provide 'sticky-shell)
 ;;; sticky-shell.el ends here
