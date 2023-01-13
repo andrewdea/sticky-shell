@@ -115,10 +115,14 @@ This ensures that the prompt in the header corresponds to top output-line"
                               (/ diff 2))
                            3))))))
 
+(defmacro sticky-shell-shorten-header ()
+  `(let ((header-func (cadr header-line-format)))
+     (setq-local header-line-format
+                 `(:eval (sticky-shell-fit-within-line ,header-func)))))
 ;; TODO: trying to determine what the best approach for this is
 ;; ideally, one could
 ;; 1) switch it on/off at will
-;; 2) set it up so that sticky-shell-mode automatically sets it off
+;; 2) set it up so that sticky-shell-mode automatically sets it on
 ;; 3) have it on only in specific buffers
 ;; making its own minor mode achieves 1 and 2 (2 could be done by running a `sticky-shell-mode-hook')
 ;; but using an advice strategy makes it so that it cannot be local 🤔🤔🤔🤔🤔🤔
@@ -127,11 +131,6 @@ This ensures that the prompt in the header corresponds to top output-line"
 ;; from within `sticky-shell-mode'
 ;; TODO: will look into ways to fix this:
 ;; there should be a way to tie "child modes" to their "parents"
-(defmacro sticky-shell-shorten-header ()
-  `(let ((header-func (cadr header-line-format)))
-     (setq-local header-line-format
-                 `(:eval (sticky-shell-fit-within-line ,header-func)))))
-
 (define-minor-mode sticky-shell-shorten-header-mode
   "Minor mode to shorten the header, making the beginning and end both visible."
   :group 'sticky-shell
@@ -156,7 +155,7 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
   :lighter nil
   (if sticky-shell-mode
       (setq-local header-line-format
-                  '(:eval ; question: why do we use :eval instead of eval here??
+                  '(:eval ; question: why do we use :eval instead of `eval' here??
                     (funcall sticky-shell-get-prompt)))
     (progn
       (setq-local header-line-format nil)
