@@ -160,8 +160,8 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
   :lighter nil
   (if sticky-shell-mode
       (setq-local header-line-format
-                  (list '(:eval
-                          (funcall sticky-shell-get-prompt))))
+                  '(:eval
+                    (funcall sticky-shell-get-prompt)))
     (setq-local header-line-format nil)))
 
 (provide 'sticky-shell)
