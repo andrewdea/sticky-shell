@@ -56,7 +56,7 @@ or you can write your own function and assign it to this variable."
   :group 'sticky-shell
   :type 'function)
 
-
+;;;; helper functions
 (defun sticky-shell-current-line-trimmed ()
   "Return the current line and remove trailing whitespace."
   (let ((prompt (or (thing-at-point 'line) "")))
@@ -71,6 +71,7 @@ or `eshell-previous-prompt'."
       (eshell-previous-prompt n)
     (comint-previous-prompt n)))
 
+;;;; get prompt
 (defun sticky-shell-latest-prompt ()
   "Get the latest prompt that was run."
   (interactive)
@@ -96,6 +97,32 @@ This ensures that the prompt in the header corresponds to top output-line"
     (move-beginning-of-line 1)
     (sticky-shell-previous-prompt 1)
     (sticky-shell-current-line-trimmed)))
+
+;;;; shorten header
+(defun sticky-shell-abbrev-header (header)
+  (let* ((max-chars-per-line (window-max-chars-per-line))
+         (header-length (length header))
+         (diff (- header-length max-chars-per-line)))
+    (if (<= diff 0)
+        header
+      (concat
+       (seq-take header
+                 (- (/ header-length 2) ;; this ratio could be made customizable if needed?
+                    (/ diff 2)))
+       "..."
+       (seq-drop header
+                 (+ (+ (/ (length header) 2)
+                       (/ diff 2))
+                    3))))))
+
+(define-minor-mode sticky-shell-abbrev-header-mode
+  "Minor mode to shorten the header, making the beginning and end both visible."
+  :group 'sticky-shell
+  :global t
+  :lighter nil
+  (if (and sticky-shell-abbrev-header-mode sticky-shell-mode)
+      (advice-add sticky-shell-get-prompt :filter-return #'sticky-shell-abbrev-header)
+    (advice-remove sticky-shell-get-prompt #'sticky-shell-abbrev-header)))
 
 ;;;###autoload
 (define-minor-mode sticky-shell-mode
