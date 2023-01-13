@@ -1,4 +1,4 @@
-;;; sticky-shell.el --- Minor mode to add a sticky header to your shell  -*- lexical-binding: t; -*-
+;;; sticky-shell.el --- Minor mode to keep track of previous prompt in your shell  -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2022  Andrew De Angelis
 
