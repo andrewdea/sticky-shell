@@ -135,22 +135,33 @@ The \"...\" is propertized with the face `sticky-shell-shorten-header-ellipsis'"
                               (/ diff 2))
                            3))))))
 
-(defmacro sticky-shell-shorten-header ()
+;; (defmacro sticky-shell-shorten-header ()
+;;   "Apply `sticky-shell-fit-within-line' to `header-line-format'.
+;; `header-line-format' should look like this:
+;; \(:eval (funcall sticky-shell-get-prompt)),
+;; so we take the part after `eval'
+;; and wrap it within `sticky-shell-fit-within-line'"
+;;   `(let ((header-function (cadr header-line-format)))
+;;      (setq-local header-line-format
+;;                  `(:eval (sticky-shell-fit-within-line ,header-function)))))
+
+(defun sticky-shell-shorten-header ()
   "Apply `sticky-shell-fit-within-line' to `header-line-format'.
 `header-line-format' should look like this:
 \(:eval (funcall sticky-shell-get-prompt)),
 so we take the part after `eval'
 and wrap it within `sticky-shell-fit-within-line'"
-  `(let ((header-function (cadr header-line-format)))
-     (setq-local header-line-format
-                 `(:eval (sticky-shell-fit-within-line ,header-function)))))
+  (let ((header-function (cadr header-line-format)))
+    (setq-local header-line-format
+                `(:eval (sticky-shell-fit-within-line ,header-function)))))
 
-(defmacro sticky-shell-restore-header ()
+
+(defun sticky-shell-restore-header ()
   "Remove `sticky-shell-fit-within-line' from `header-line-format'."
-  `(when (eq (caadr header-line-format) #'sticky-shell-fit-within-line)
-     (let ((header-function (cadadr header-line-format)))
-       (setq-local header-line-format
-                   `(:eval ,header-function)))))
+  (when (eq (caadr header-line-format) #'sticky-shell-fit-within-line)
+    (let ((header-function (cadadr header-line-format)))
+      (setq-local header-line-format
+                  `(:eval ,header-function)))))
 
 (define-minor-mode sticky-shell-shorten-header-mode
   "Minor mode to shorten the header, making the beginning and end both visible."
