@@ -30,6 +30,12 @@
 ;; setting `sticky-shell-get-prompt' to `sticky-shell-prompt-above-visible'
 ;; will ensure that the command corresponding to the top output-line
 ;; is always visible.
+;; Additional modes are provided:
+;; `sticky-shell-global-mode' to enable `sticky-shell-mode' in all shell buffers,
+;; and `sticky-shell-shorten-header-mode' to shorten the prompt in the header,
+;; ensuring that the prompt's beginning and end are always both visible.
+;; If you'd like the shorten-header mode to be enabled by default, you should
+;; add `sticky-shell-shorten-header-set-mode' to `sticky-shell-mode-hook'
 
 ;;; Code:
 (eval-when-compile
@@ -190,7 +196,7 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
 (define-minor-mode sticky-shell-shorten-header-mode
   "Minor mode to shorten the header, making the beginning and end both visible.
 Because this mode depends on `sticky-shell-mode',
-it's good practice to set it using `sticky-shell-shorten-header-set-mode',
+it is good practice to set it using `sticky-shell-shorten-header-set-mode',
 which ensures to only enable it if `sticky-shell-mode' is already enabled,
 while making sure to disable it when `sticky-shell-mode' is disabled."
   :group 'sticky-shell
