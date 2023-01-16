@@ -162,26 +162,7 @@ if you want your header to default to shortened."
   (sticky-shell-shorten-header-mode
    (or (bound-and-true-p sticky-shell-mode) -1)))
 
-(define-minor-mode sticky-shell-shorten-header-mode
-  "Minor mode to shorten the header, making the beginning and end both visible.
-Because this mode depends on `sticky-shell-mode',
-it's good practice to set it using `sticky-shell-shorten-header-set-mode',
-which ensures to only enable it if `sticky-shell-mode' is already enabled,
-while making sure to disable it when `sticky-shell-mode' is disabled."
-  :group 'sticky-shell
-  :global nil
-  :lighter nil
-  (cond ((bound-and-true-p sticky-shell-mode)
-         (if sticky-shell-shorten-header-mode
-             (sticky-shell-shorten-header)
-           (sticky-shell-restore-header)))
-        (sticky-shell-shorten-header-mode
-         (progn
-           (message
-            "Cannot enable `sticky-shell-shorten-header-mode' while `sticky-shell-mode' is disabled")
-           (setq-local sticky-shell-shorten-header-mode nil)))))
-
-
+;;;; modes
 ;;;###autoload
 (define-minor-mode sticky-shell-mode
   "Minor mode to show the previous prompt as a sticky header.
@@ -205,6 +186,27 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
   (when (or (derived-mode-p 'comint-mode)
             (derived-mode-p 'eshell-mode))
     (sticky-shell-mode +1)))
+
+
+(define-minor-mode sticky-shell-shorten-header-mode
+  "Minor mode to shorten the header, making the beginning and end both visible.
+Because this mode depends on `sticky-shell-mode',
+it's good practice to set it using `sticky-shell-shorten-header-set-mode',
+which ensures to only enable it if `sticky-shell-mode' is already enabled,
+while making sure to disable it when `sticky-shell-mode' is disabled."
+  :group 'sticky-shell
+  :global nil
+  :lighter nil
+  (cond (sticky-shell-mode
+         (if sticky-shell-shorten-header-mode
+             (sticky-shell-shorten-header)
+           (sticky-shell-restore-header)))
+        (sticky-shell-shorten-header-mode
+         (progn
+           (message
+            "Cannot enable `sticky-shell-shorten-header-mode' while `sticky-shell-mode' is disabled")
+           (setq-local sticky-shell-shorten-header-mode nil)))))
+
 
 (provide 'sticky-shell)
 ;;; sticky-shell.el ends here
