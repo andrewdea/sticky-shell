@@ -3,6 +3,7 @@
 - [[#use][Use]]
 - [[#install][Install]]
 - [[#customize][Customize]]
+- [[#shorten-header][Shorten header]]
 - [[#screenshots][Screenshots]]
 - [[#contributeissues][Contribute/Issues]]
 
@@ -35,6 +36,13 @@ The customizable variable is `sticky-shell-get-prompt'
    (see the functions' doc strings for a detailed explanation).
 
    You can also write your own function and assign it to this variable.
+
+* Shorten header
+Some times, a prompt is too long to fit within a one-line header. For these cases, `sticky-shell-shorten-header-mode' can be used to shorten the prompt, ensuring that the beginning and end of the prompt are always visible within the header.
+
+This mode can be enabled or disabled with the usual mechanism (calling the `sticky-shell-shorten-header-mode' function).
+
+If you wish for the header to be shortened by default, add `sticky-shell-shorten-header-set-mode' to the `sticky-shell-mode-hook'. This function ensures that `sticky-shell-shorten-header-mode' is enabled/disabled together with `sticky-shell-mode'.
 
 * Screenshots
 #+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
