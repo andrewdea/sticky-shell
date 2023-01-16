@@ -136,7 +136,7 @@ The \"...\" is propertized with the face `sticky-shell-shorten-header-ellipsis'"
 (defun sticky-shell-shorten-header ()
   "Apply `sticky-shell-fit-within-line' to `header-line-format'.
 `header-line-format' should look like this:
-\(:eval (funcall sticky-shell-get-prompt)),
+\(:eval (funcall `sticky-shell-get-prompt')),
 so we take the part after `eval'
 and wrap it within `sticky-shell-fit-within-line'"
   (let ((header-function (cadr header-line-format)))
