@@ -60,8 +60,7 @@ or you can write your own function and assign it to this variable."
   "Face used for the ellipsis shortening the sticky-shell header."
   :group 'sticky-shell)
 
-;;;; helper functions
-(defun sticky-shell-current-line-trimmed ()
+(defun sticky-shell--current-line-trimmed ()
   "Return the current line and remove trailing whitespace."
   (let ((prompt (or (thing-at-point 'line) "")))
     ;; remove whitespace at the end of the line:
@@ -83,7 +82,7 @@ or `eshell-previous-prompt'."
     (goto-char (point-max))
     (forward-line -1)
     (sticky-shell-previous-prompt 1)
-    (sticky-shell-current-line-trimmed)))
+    (sticky-shell--current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-visible ()
   "Get the prompt above the top visible line in the current window.
@@ -92,7 +91,7 @@ This ensures that the prompt in the header corresponds to top output-line"
   (save-excursion
     (goto-char (window-start))
     (sticky-shell-previous-prompt 1)
-    (sticky-shell-current-line-trimmed)))
+    (sticky-shell--current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-cursor ()
   "Get the prompt above the cursor's current line."
@@ -100,7 +99,7 @@ This ensures that the prompt in the header corresponds to top output-line"
   (save-excursion
     (move-beginning-of-line 1)
     (sticky-shell-previous-prompt 1)
-    (sticky-shell-current-line-trimmed)))
+    (sticky-shell--current-line-trimmed)))
 
 ;;;; shorten header
 (defun sticky-shell-fit-within-line (header)
