@@ -66,7 +66,7 @@ or you can write your own function and assign it to this variable."
     ;; remove whitespace at the end of the line:
     (string-trim-right prompt "[ \t\n\r]+")))
 
-(defun sticky-shell-previous-prompt (n)
+(defun sticky-shell--previous-prompt (n)
   "Move to end of Nth previous prompt in the buffer.
 Depending on the current mode, call `comint-previous-prompt'
 or `eshell-previous-prompt'."
@@ -81,7 +81,7 @@ or `eshell-previous-prompt'."
   (save-excursion
     (goto-char (point-max))
     (forward-line -1)
-    (sticky-shell-previous-prompt 1)
+    (sticky-shell--previous-prompt 1)
     (sticky-shell--current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-visible ()
@@ -90,7 +90,7 @@ This ensures that the prompt in the header corresponds to top output-line"
   (interactive)
   (save-excursion
     (goto-char (window-start))
-    (sticky-shell-previous-prompt 1)
+    (sticky-shell--previous-prompt 1)
     (sticky-shell--current-line-trimmed)))
 
 (defun sticky-shell-prompt-above-cursor ()
@@ -98,7 +98,7 @@ This ensures that the prompt in the header corresponds to top output-line"
   (interactive)
   (save-excursion
     (move-beginning-of-line 1)
-    (sticky-shell-previous-prompt 1)
+    (sticky-shell--previous-prompt 1)
     (sticky-shell--current-line-trimmed)))
 
 ;;;; shorten header
