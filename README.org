@@ -54,7 +54,7 @@ If you wish for the header to be shortened by default, add `sticky-shell-shorten
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make_clean.png]]
 A comint shell using `sticky-shell-prompt-above-visible'
 
-#+CAPTION: Running *eshell* using `sticky-shell-prompt-above-visible'
+#+CAPTION: Running *eshell* using `sticky-shell-prompt-above-cursor'
 #+NAME:   fig:prompt-above-cursor
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/eshell-prompt-above-cursor.png]]
 An eshell using `sticky-shell-prompt-above-cursor'
