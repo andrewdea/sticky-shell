@@ -10,9 +10,8 @@
 ;; Keywords: processes, terminals, tools
 
 ;; This program is free software; you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
+;; it under the terms of the GNU General Public License Version 3,
+;; as published by the Free Software Foundation.
 
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -196,6 +195,16 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
                     (funcall sticky-shell-get-prompt)))
     (setq-local header-line-format nil
                 sticky-shell-shorten-header-mode nil)))
+
+;;;###autoload
+(define-globalized-minor-mode sticky-shell-global-mode
+  sticky-shell-mode sticky-shell--global-on)
+
+(defun sticky-shell--global-on ()
+  "Enable `sticky-shell-mode' if appropriate for the buffer."
+  (when (or (derived-mode-p 'comint-mode)
+            (derived-mode-p 'eshell-mode))
+    (sticky-shell-mode +1)))
 
 (provide 'sticky-shell)
 ;;; sticky-shell.el ends here
