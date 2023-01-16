@@ -5,6 +5,7 @@
 - [[#customize][Customize]]
 - [[#shorten-header][Shorten header]]
 - [[#screenshots][Screenshots]]
+  - [[#shorten-header-1][Shorten header]]
 - [[#contributeissues][Contribute/Issues]]
 
 * Use
@@ -38,7 +39,7 @@ The customizable variable is `sticky-shell-get-prompt'
    You can also write your own function and assign it to this variable.
 
 * Shorten header
-Some times, a prompt is too long to fit within a one-line header. For these cases, `sticky-shell-shorten-header-mode' can be used to shorten the prompt, ensuring that the beginning and end of the prompt are always visible within the header.
+Some times, a prompt is too long to fit within a one-line header. For these cases, `sticky-shell-shorten-header-mode' can be used to shorten the prompt, ensuring that the beginning and end of the prompt are always visible within the header (see [[#shorten-header-1][fourth screenshot]]).
 
 This mode can be enabled or disabled with the usual mechanism (calling the `sticky-shell-shorten-header-mode' function).
 
@@ -58,6 +59,12 @@ A comint shell using `sticky-shell-prompt-above-visible'
 #+NAME:   fig:prompt-above-cursor
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/eshell-prompt-above-cursor.png]]
 An eshell using `sticky-shell-prompt-above-cursor'
+
+** Shorten header
+#+CAPTION: Running *eshell* using `sticky-shell-prompt-above-cursor' and `sticky-shell-shorten-header-mode'
+#+NAME:   fig:shorten-header-mode
+[[file:https://github.com/andyjda/sticky-shell/blob/shorten-header/screenshots/eshell-shorten-header-mode.png]]
+An eshell using `sticky-shell-shorten-header-mode' with `sticky-shell-prompt-above-cursor'
 
 * Contribute/Issues
 Please contact me here if you'd like to add features or if you encounter any issues while using this package.
