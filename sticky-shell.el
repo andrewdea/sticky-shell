@@ -121,9 +121,8 @@ The shortening logic is:
  - add an ellipsis (\"...\") between the two halves
  - remove three chars from the second half to make room for the ellipsis
 The \"...\" is propertized with the face `sticky-shell-shorten-header-ellipsis'"
-  (let* ((max-chars-per-line (window-max-chars-per-line))
-         (header-length (length header))
-         (diff (- header-length max-chars-per-line)))
+  (let* ((header-length (length header))
+         (diff (- header-length (window-max-chars-per-line))))
     (if (<= diff 0)
         header
       (format "%s%s%s"
@@ -135,7 +134,7 @@ The \"...\" is propertized with the face `sticky-shell-shorten-header-ellipsis'"
               ;; second half of the header, minus half the difference
               ;; and making room for the three dots
               (seq-drop header
-                        (+ (+ (/ (length header) 2)
+                        (+ (+ (/ header-length 2)
                               (/ diff 2))
                            3))))))
 
