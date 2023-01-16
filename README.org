@@ -7,9 +7,11 @@
 - [[#contributeissues][Contribute/Issues]]
 
 * Use
-In any shell within Emacs, run *M-x* /sticky-shell-mode/.
+ - In any shell within Emacs, run *M-x* /sticky-shell-mode/ to enable the mode locally.
+ - To enable the mode for all shell buffers, run *M-x* /sticky-shell-global-mode/.
 
 The mode should work in any shell that inherits from `eshell-mode' or `comint-mode'. This includes most language-interpreters I could try (Python, Clojure, etc). If you find a shell for which the mode doesn't work, please let me know.
+
 * Install
 I've created [[https://github.com/melpa/melpa/pull/8360][this PR]] to add the package to MELPA. Until then:
  1. Clone this repo
@@ -44,7 +46,7 @@ The customizable variable is `sticky-shell-get-prompt'
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make_clean.png]]
 A comint shell using `sticky-shell-prompt-above-visible'
 
-#+CAPTION: Running *eshell* using `sticky-shell-prompt-above-visible' and `sticky-shell-prompt-modifiers'
+#+CAPTION: Running *eshell* using `sticky-shell-prompt-above-visible'
 #+NAME:   fig:prompt-above-cursor
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/eshell-prompt-above-cursor.png]]
 An eshell using `sticky-shell-prompt-above-cursor'
