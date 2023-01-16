@@ -5,6 +5,8 @@
 - [[#customize][Customize]]
 - [[#shorten-header][Shorten header]]
 - [[#screenshots][Screenshots]]
+  - [[#show-prompt-above-visible-line][Show prompt above visible line]]
+  - [[#show-prompt-above-cursor][Show prompt above cursor]]
   - [[#shorten-header-1][Shorten header]]
 - [[#contributeissues][Contribute/Issues]]
 
@@ -46,6 +48,7 @@ This mode can be enabled or disabled with the usual mechanism (calling the `stic
 If you wish for the header to be shortened by default, add `sticky-shell-shorten-header-set-mode' to the `sticky-shell-mode-hook'. This function ensures that `sticky-shell-shorten-header-mode' is enabled/disabled together with `sticky-shell-mode'.
 
 * Screenshots
+** Show prompt above visible line
 #+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
 #+NAME:   fig:make
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make.png]]
@@ -55,6 +58,7 @@ If you wish for the header to be shortened by default, add `sticky-shell-shorten
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make_clean.png]]
 A comint shell using `sticky-shell-prompt-above-visible'
 
+** Show prompt above cursor
 #+CAPTION: Running *eshell* using `sticky-shell-prompt-above-cursor'
 #+NAME:   fig:prompt-above-cursor
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/eshell-prompt-above-cursor.png]]
