@@ -110,5 +110,15 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
                     (funcall sticky-shell-get-prompt)))
     (setq-local header-line-format nil)))
 
+;;;###autoload
+(define-globalized-minor-mode sticky-shell-global-mode
+  sticky-shell-mode sticky-shell--global-on)
+
+(defun sticky-shell--global-on ()
+  "Enable `sticky-shell-mode' if appropriate for the buffer."
+  (when (or (derived-mode-p 'comint-mode)
+            (derived-mode-p 'eshell-mode))
+    (sticky-shell-mode +1)))
+
 (provide 'sticky-shell)
 ;;; sticky-shell.el ends here
