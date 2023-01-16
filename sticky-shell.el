@@ -30,6 +30,8 @@
 ;; setting `sticky-shell-get-prompt' to `sticky-shell-prompt-above-visible'
 ;; will ensure that the command corresponding to the top output-line
 ;; is always visible.
+;; The mode can be set globally (for all shell buffers)
+;; with `sticky-shell-global-mode'.
 
 ;;; Code:
 (eval-when-compile
