@@ -17,19 +17,25 @@
 The mode should work in any shell that inherits from `eshell-mode' or `comint-mode'. This includes most language-interpreters I could try (Python, Clojure, etc). If you find a shell for which the mode doesn't work, please let me know.
 
 * Install
-I've created [[https://github.com/melpa/melpa/pull/8360][this PR]] to add the package to MELPA. Until then:
- 1. Clone this repo
- 2. Add this to your init file:
+The package is available through MELPA. To install from there:
+  - Make sure MELPA is in your package archives
     #+begin_src emacs-lisp
-      (add-to-list 'load-path "your-path-to/sticky-shell/")
+      (require 'package)
+      (add-to-list 'package-archives
+                   '("melpa-stable" . "https://stable.melpa.org/packages/") t)
     #+end_src
-
- 3. Or, if you use use-package:
+** interactively
+    - M-x /package-refresh-contents/
+    - M-x /package-install/ sticky-shell
+** with use-package
+You can install and configure with [[https://github.com/jwiegley/use-package][use-package]]:
     #+begin_src emacs-lisp
       (use-package sticky-shell
-        :load-path "your-path-to/sticky-shell/")
+        ;; install
+        :ensure t
+        ;; add your customization here
+        )
      #+end_src
-
 * Customize
 The customizable variable is `sticky-shell-get-prompt'
  - `sticky-shell-get-prompt' is the function determining which prompt to show: the available options are

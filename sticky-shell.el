@@ -29,7 +29,7 @@
 ;; This is most useful when working with many lines of output:
 ;; you can ensure that the command corresponding to the top output-line
 ;; is always visible by setting `sticky-shell-get-prompt' to
-;; `sticky-shell-prompt-above-visible' (its default values).
+;; `sticky-shell-prompt-above-visible' (its default value).
 ;; Additional modes are provided:
 ;; `sticky-shell-global-mode' to enable `sticky-shell-mode' in all shell buffers,
 ;; and `sticky-shell-shorten-header-mode' to shorten the prompt in the header,
