@@ -26,14 +26,19 @@
 ;; This package provides a minor mode that creates a header in a shell buffer.
 ;; The header shows a previous prompt according to the customizable value of
 ;; `sticky-shell-get-prompt'.
+;;
 ;; This is most useful when working with many lines of output:
 ;; you can ensure that the command corresponding to the top output-line
 ;; is always visible by setting `sticky-shell-get-prompt' to
 ;; `sticky-shell-prompt-above-visible' (its default value).
-;; Additional modes are provided:
-;; `sticky-shell-global-mode' to enable `sticky-shell-mode' in all shell buffers,
-;; and `sticky-shell-shorten-header-mode' to shorten the prompt in the header,
-;; ensuring that the prompt's beginning and end are always both visible.
+;;
+;; To enable the mode, run `sticky-shell-mode' in any shell buffer.
+;;
+;; The mode can be set globally (for all shell buffers)
+;; with `sticky-shell-global-mode'.
+;;
+;; `sticky-shell-shorten-header-mode' can be used to shorten the prompt in the
+;; header, ensuring that the prompt's beginning and end are always both visible.
 ;; If you'd like the shorten-header mode to be enabled by default, you should
 ;; add `sticky-shell-shorten-header-set-mode' to `sticky-shell-mode-hook'
 
