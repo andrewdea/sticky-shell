@@ -37,8 +37,9 @@
 ;; The mode can be set globally (for all shell buffers)
 ;; with `sticky-shell-global-mode'.
 ;;
-;; `sticky-shell-shorten-header-mode' can be used to shorten the prompt in the
-;; header, ensuring that the prompt's beginning and end are always both visible.
+;; Because headers have to fit within one line, sometimes the final part of the
+;; prompt is not visible. To ensure that the prompt's beginning and end are
+;; always both visible, you can use `sticky-shell-shorten-header-mode'.
 ;; If you'd like the shorten-header mode to be enabled by default, you should
 ;; add `sticky-shell-shorten-header-set-mode' to `sticky-shell-mode-hook'
 
