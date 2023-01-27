@@ -45,13 +45,27 @@
 ;; add `sticky-shell-shorten-header-set-mode' to `sticky-shell-mode-hook'
 
 ;;; Code:
-(eval-when-compile
-  (require 'eshell)
-  (require 'comint))
 
+;; TODO: keeping this in the same block for now
+;; once approach is settled, will keep `declare-function' here,
+;; and make `sticky-shell-supported-modes' a custom variable
+;; should it stay here at the top or move to the bottom?
+;;;; supported modes
 (declare-function eshell-previous-prompt "ext:eshell")
 (declare-function comint-previous-prompt "ext:comint")
+(declare-function term-previous-prompt "ext:term")
+(declare-function vterm-previous-prompt "ext:vterm")
 
+(defvar sticky-shell-supported-modes
+  (list
+   'eshell-mode #'eshell-previous-prompt
+   'comint-mode #'comint-previous-prompt
+   'term-mode #'term-previous-prompt
+   'vterm-mode #'vterm-previous-prompt))
+
+(defvar sticky-shell-previous-prompt-function)
+
+;;;; core
 (defgroup sticky-shell nil
   "Display a sticky header with latest shell-prompt."
   :group 'terminals)
@@ -83,9 +97,7 @@ or you can write your own function and assign it to this variable."
   "Move to end of Nth previous prompt in the buffer.
 Depending on the current mode, call `comint-previous-prompt'
 or `eshell-previous-prompt'."
-  (if (derived-mode-p 'eshell-mode)
-      (eshell-previous-prompt n)
-    (comint-previous-prompt n)))
+  (funcall sticky-shell-previous-prompt-function n))
 
 ;;;; get prompt
 (defun sticky-shell-latest-prompt ()
@@ -184,7 +196,16 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
   (if sticky-shell-mode
       (setq-local header-line-format
                   '(:eval ; question: why do we use :eval instead of `eval' here??
-                    (funcall sticky-shell-get-prompt)))
+                    (funcall sticky-shell-get-prompt))
+                  sticky-shell-previous-prompt-function
+                  ;; TODO: is plist-get the best approach here?
+                  ;; the fact we have to use _ignored_args makes it kinda hacky
+                  (or (plist-get
+                       sticky-shell-supported-modes nil
+                       (lambda (mode _ignored_arg)
+                         (derived-mode-p mode)))
+                      ;; TODO: should we have this as default, or just nil?
+                      #'comint-previous-prompt))
     (setq-local header-line-format nil
                 sticky-shell-shorten-header-mode nil)))
 
