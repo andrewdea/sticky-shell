@@ -43,33 +43,30 @@
 ;;
 ;; If you'd like this shorten-header mode to be enabled by default, you should
 ;; add `sticky-shell-shorten-header-set-mode' to `sticky-shell-mode-hook'
+;;
+;; `sticky-shell-mode' currently supports any mode derived from the following:
+;; `shell-mode', `eshell-mode', `term-mode', `vterm-mode'.
+;; It should be easy to add support for additional modes:
+;; see `sticky-shell-supported-modes'.
+;;
+;; Note that `sticky-shell-shorten-header-mode' doesn't work properly in
+;; `term-mode' and `vterm-mode'. This is not because of an issue with
+;; `sticky-shell-shorten-header-mode' itself, but because `sticky-shell-mode'
+;; uses `(thing-at-point 'line)' to read a prompt: in terminal modes, this
+;; function returns a line within the borders of a window rather than up to the
+;; first newline character.
+;; Right now I'd rather keep this general implementation simple rather than
+;; overfit for these particular modes.
+;; You can always define your own `sticky-shell-get-prompt' function that works
+;; as desired: if this function returns a string that doesn't fit fully within
+;; one line, `sticky-shell-shorten-header-mode' would work as usual.
 
 ;;; Code:
-
-;; TODO: keeping this in the same block for now
-;; once approach is settled, will keep `declare-function' here,
-;; and make `sticky-shell-supported-modes' a custom variable
-;; should it stay here at the top or move to the bottom?
-;;;; supported modes
-(declare-function eshell-previous-prompt "ext:eshell")
-(declare-function comint-previous-prompt "ext:comint")
-(declare-function term-previous-prompt "ext:term")
-(declare-function vterm-previous-prompt "ext:vterm")
-
-(defvar sticky-shell-supported-modes
-  (list
-   'eshell-mode #'eshell-previous-prompt
-   'comint-mode #'comint-previous-prompt
-   'term-mode #'term-previous-prompt
-   'vterm-mode #'vterm-previous-prompt))
-
-(defvar sticky-shell-previous-prompt-function)
 
 ;;;; core
 (defgroup sticky-shell nil
   "Display a sticky header with latest shell-prompt."
   :group 'terminals)
-
 
 (defcustom sticky-shell-get-prompt
   #'sticky-shell-prompt-above-visible
@@ -81,6 +78,32 @@ Available values are: `sticky-shell-latest-prompt',
 or you can write your own function and assign it to this variable."
   :group 'sticky-shell
   :type 'function)
+
+;; supported modes
+(declare-function eshell-previous-prompt "ext:eshell")
+(declare-function comint-previous-prompt "ext:comint")
+(declare-function term-previous-prompt "ext:term")
+(declare-function vterm-previous-prompt "ext:vterm")
+
+(defcustom sticky-shell-supported-modes
+  (list
+   'eshell-mode #'eshell-previous-prompt
+   'comint-mode #'comint-previous-prompt
+   'term-mode #'term-previous-prompt
+   'vterm-mode #'vterm-previous-prompt)
+  "Property-list: each supported mode paired with its previous-prompt function.
+This list is checked by `sticky-shell-mode' when setting the value of
+`sticky-shell-previous-prompt-function'.
+Note that some of these functions, like `vterm-previous-prompt',
+require you to set the prompt's regexp first.
+See the functions' own documentation for more info"
+  :group 'sticky-shell
+  :type 'plist)
+
+(defvar sticky-shell-previous-prompt-function
+  #'comint-previous-prompt
+  "Function called to retrieve the previous propmt.
+Varies depending on which mode the current major-mode is derived from.")
 
 (defface sticky-shell-shorten-header-ellipsis
   '((t :inherit default))
@@ -204,7 +227,7 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
                        sticky-shell-supported-modes nil
                        (lambda (mode _ignored_arg)
                          (derived-mode-p mode)))
-                      ;; TODO: should we have this as default, or just nil?
+                      ;; default to `comint-previous-prompt'
                       #'comint-previous-prompt))
     (setq-local header-line-format nil
                 sticky-shell-shorten-header-mode nil)))
