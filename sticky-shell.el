@@ -215,8 +215,10 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
 
 (defun sticky-shell--global-on ()
   "Enable `sticky-shell-mode' if appropriate for the buffer."
-  (when (or (derived-mode-p 'comint-mode)
-            (derived-mode-p 'eshell-mode))
+  (when (plist-get
+         sticky-shell-supported-modes nil
+         (lambda (mode _ignored_arg)
+           (derived-mode-p mode)))
     (sticky-shell-mode +1)))
 
 
