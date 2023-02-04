@@ -2,8 +2,11 @@
 * Table of Contents :TOC:
 - [[#use][Use]]
 - [[#install][Install]]
+  - [[#interactively][interactively]]
+  - [[#with-use-package][with use-package]]
 - [[#customize][Customize]]
 - [[#shorten-header][Shorten header]]
+  - [[#support-for-terminal-modes][support for terminal modes]]
 - [[#screenshots][Screenshots]]
   - [[#show-prompt-above-visible-line][Show prompt above visible line]]
   - [[#show-prompt-above-cursor][Show prompt above cursor]]
@@ -14,9 +17,11 @@
  - In any shell within Emacs, run *M-x* /sticky-shell-mode/ to enable the mode locally.
  - To enable the mode for all shell buffers, run *M-x* /sticky-shell-global-mode/.
 
-The mode should work in any shell that inherits: `eshell-mode', `comint-mode', `vterm-mode', `term-mode'. It should be easy to add support for additional modes (see `sticky-shell-supported-modes').
-Most language-interpreters I could try (Python, Clojure, Lisp) derive from `comint-mode'. If you'd like to add better support for any additional modes, please let me know.
+The mode should work in any shell that inherits: /eshell-mode/, /comint-mode/, /vterm-mode/, /term-mode/. It should be easy to add support for additional modes (see /sticky-shell-supported-modes/).
 
+If you'd like to add better support for any additional modes, please let me know.
+
+All language-interpreters I could try (Python, Clojure, Emacs-Lisp) derive from /comint-mode/.
 If you find a shell for which the mode doesn't work, please let me know.
 
 * Install
@@ -27,7 +32,7 @@ The package is available through MELPA. To install from there:
       (add-to-list 'package-archives
                    '("melpa-stable" . "https://stable.melpa.org/packages/") t)
     #+end_src
-  - then:
+Then:
 ** interactively
     - M-x /package-refresh-contents/
     - M-x /package-install/ sticky-shell
@@ -40,30 +45,37 @@ You can install and configure with [[https://github.com/jwiegley/use-package][us
         )
      #+end_src
 * Customize
-The customizable variable is `sticky-shell-get-prompt'
- - `sticky-shell-get-prompt' is the function determining which prompt to show: the available options are
-   - `sticky-shell-latest-prompt'
-   - `sticky-shell-prompt-above-visible'
-   - `sticky-shell-prompt-above-cursor'
-   (see the functions' doc strings for a detailed explanation).
+The customizable variables are:
+
+ - /sticky-shell-get-prompt/ the function determining which prompt to show.
+   The available options are:
+   - /sticky-shell-latest-prompt/
+   - /sticky-shell-prompt-above-visible/
+   - /sticky-shell-prompt-above-cursor/
+   (see the functions' doc strings for a detailed explanation)
 
    You can also write your own function and assign it to this variable.
+ - /sticky-shell-supported-modes/ a property list of modes.
+   Each mode is associated with the function needed to navigate to a previous prompt. For example /('eshell-mode #'eshell-previous-prompt)/.
+
+   You can implement support for additional modes by adding to this list. Your choice of /sticky-shell-get-prompt/ will then use this /*-previous-prompt/ function to retrieve the correct prompt.
+
 
 * Shorten header
-Some times, a prompt is too long to fit within a one-line header. For these cases, `sticky-shell-shorten-header-mode' can be used to shorten the prompt, ensuring that the beginning and end of the prompt are always visible within the header (see [[#shorten-header-1][fourth screenshot]]).
+At times, a prompt is too long to fit within a one-line header. For these cases, /sticky-shell-shorten-header-mode/ can be used to shorten the prompt, ensuring that the beginning and end of the prompt are always visible within the header (see [[#shorten-header-1][fourth screenshot]]).
 
-This mode can be enabled or disabled with the usual mechanism (calling the `sticky-shell-shorten-header-mode' function).
+This mode can be enabled or disabled with the usual mechanism (calling the /sticky-shell-shorten-header-mode/ function).
 
-If you wish for the header to be shortened by default, add `sticky-shell-shorten-header-set-mode' to the `sticky-shell-mode-hook'. This function ensures that `sticky-shell-shorten-header-mode' is enabled/disabled together with `sticky-shell-mode'.
+If you wish for the header to be shortened by default, add /sticky-shell-shorten-header-set-mode/ to the /sticky-shell-mode-hook/. This function ensures that /sticky-shell-shorten-header-mode/ is enabled/disabled together with /sticky-shell-mode/.
 
 ** support for terminal modes
-Note that `sticky-shell-shorten-header-mode' doesn't work properly in `term-mode' and `vterm-mode'.
+Note that /sticky-shell-shorten-header-mode/ doesn't work properly in /term-mode/ and /vterm-mode/.
 
-This is not because of an issue with `sticky-shell-shorten-header-mode' itself, but because `sticky-shell-mode' uses `(thing-at-point 'line)' to read a prompt: in terminal modes, this function returns a line within the borders of a window rather than up to the first newline character. The result is that the header will always be cut-off at the window-border.
+This is not because of an issue with /sticky-shell-shorten-header-mode/ itself, but because /sticky-shell-mode/ uses /(thing-at-point 'line)/ to read a prompt: in terminal modes, this function returns a line within the borders of a window rather than up to the first newline character. The result is that the header will always be cut-off at the window-border.
 
 Right now I'd rather keep this general implementation simple rather than over-fit for these particular modes.
 
-You can always define your own `sticky-shell-get-prompt' function that works as desired: if this function returns a string that doesn't fit fully within one line, `sticky-shell-shorten-header-mode' would work as usual.
+You can always define your own /sticky-shell-get-prompt/ function that works as desired: if this function returns a string that doesn't fit fully within one line, /sticky-shell-shorten-header-mode/ would work as usual.
 
 * Screenshots
 ** Show prompt above visible line
@@ -74,19 +86,19 @@ You can always define your own `sticky-shell-get-prompt' function that works as 
 #+CAPTION: Running *shell* using `sticky-shell-prompt-above-visible'
 #+NAME:   fig:make-clean
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/make_clean.png]]
-A comint shell using `sticky-shell-prompt-above-visible'
+A comint shell using /sticky-shell-prompt-above-visible/
 
 ** Show prompt above cursor
 #+CAPTION: Running *eshell* using `sticky-shell-prompt-above-cursor'
 #+NAME:   fig:prompt-above-cursor
 [[file:https://github.com/andyjda/sticky-shell/blob/main/screenshots/eshell-prompt-above-cursor.png]]
-An eshell using `sticky-shell-prompt-above-cursor'
+An eshell using /sticky-shell-prompt-above-cursor/
 
 ** Shorten header
 #+CAPTION: Running *eshell* using `sticky-shell-prompt-above-cursor' and `sticky-shell-shorten-header-mode'
 #+NAME:   fig:shorten-header-mode
 [[file:https://github.com/andyjda/sticky-shell/blob/shorten-header/screenshots/eshell-shorten-header-mode.png]]
-An eshell using `sticky-shell-shorten-header-mode' with `sticky-shell-prompt-above-cursor'
+An eshell using /sticky-shell-shorten-header-mode/ with /sticky-shell-prompt-above-cursor/
 
 * Contribute/Issues
 Please contact me here if you'd like to add features or if you encounter any issues while using this package.
