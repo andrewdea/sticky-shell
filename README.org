@@ -34,8 +34,8 @@ The package is available through MELPA. To install from there:
     #+end_src
 Then:
 ** interactively
-    - M-x =package-refresh-contents=
-    - M-x =package-install= sticky-shell
+    - *M-x* =package-refresh-contents=
+    - *M-x* =package-install= sticky-shell
 ** with use-package
 You can install and configure with [[https://github.com/jwiegley/use-package][use-package]]:
     #+begin_src emacs-lisp
