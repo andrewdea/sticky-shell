@@ -103,7 +103,7 @@ See the functions' own documentation for more info"
 
 (defvar sticky-shell-previous-prompt-function
   #'comint-previous-prompt
-  "Function called to retrieve the previous propmt.
+  "Variable storing the function called to retrieve the previous propmt.
 Varies depending on which mode the current major-mode is derived from.")
 
 (defface sticky-shell-shorten-header-ellipsis
@@ -119,8 +119,8 @@ Varies depending on which mode the current major-mode is derived from.")
 
 (defun sticky-shell--previous-prompt (n)
   "Move to end of Nth previous prompt in the buffer.
-Depending on the current mode, call `comint-previous-prompt'
-or `eshell-previous-prompt'."
+Call the function stored in the buffer-local variable
+`sticky-shell-previous-prompt-function'."
   (funcall sticky-shell-previous-prompt-function n))
 
 ;;;; get prompt
