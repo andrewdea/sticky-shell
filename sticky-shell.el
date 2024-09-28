@@ -103,7 +103,7 @@ See the functions' own documentation for more info"
 
 (defvar sticky-shell-previous-prompt-function
   #'comint-previous-prompt
-  "Function called to retrieve the previous propmt.
+  "Variable storing the function called to retrieve the previous propmt.
 Varies depending on which mode the current major-mode is derived from.")
 
 (defface sticky-shell-shorten-header-ellipsis
@@ -119,8 +119,8 @@ Varies depending on which mode the current major-mode is derived from.")
 
 (defun sticky-shell--previous-prompt (n)
   "Move to end of Nth previous prompt in the buffer.
-Depending on the current mode, call `comint-previous-prompt'
-or `eshell-previous-prompt'."
+Call the function stored in the buffer-local variable
+`sticky-shell-previous-prompt-function'."
   (funcall sticky-shell-previous-prompt-function n))
 
 ;;;; get prompt
@@ -209,6 +209,17 @@ if you want your header to default to shortened."
   (sticky-shell-shorten-header-mode
    (or (bound-and-true-p sticky-shell-mode) -1)))
 
+(defun sticky-shell--get-func-for-derived-mode (iter-modes)
+  "Recursively iterate through ITER-MODES, a plist of (mode:
+previous-prompt-function) until you find a mode that the current mode
+  derives from.  Return the previous-prompt function for that mode.
+If not found, default to `comint-previous-prompt'."
+  (if (not iter-modes)
+      #'comint-previous-prompt
+    (if (derived-mode-p (car iter-modes))
+        (cadr iter-modes)
+      (sticky-shell--get-func-for-derived-mode (cddr iter-modes)))))
+
 ;;;; modes
 ;;;###autoload
 (define-minor-mode sticky-shell-mode
@@ -221,15 +232,11 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
       (setq-local header-line-format
                   '(:eval ; question: why do we use :eval instead of `eval' here??
                     (funcall sticky-shell-get-prompt))
+                  ;; the function we use to get the previous prompt
+                  ;; depends on the current mode:
                   sticky-shell-previous-prompt-function
-                  ;; TODO: is plist-get the best approach here?
-                  ;; the fact we have to use _ignored_args makes it kinda hacky
-                  (or (plist-get
-                       sticky-shell-supported-modes nil
-                       (lambda (mode _ignored_arg)
-                         (derived-mode-p mode)))
-                      ;; default to `comint-previous-prompt'
-                      #'comint-previous-prompt))
+                  (sticky-shell--get-func-for-derived-mode
+                   sticky-shell-supported-modes))
     (setq-local header-line-format nil
                 sticky-shell-shorten-header-mode nil)))
 
