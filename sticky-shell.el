@@ -86,12 +86,35 @@ or you can write your own function and assign it to this variable."
 (declare-function term-previous-prompt "ext:term")
 (declare-function vterm-previous-prompt "ext:vterm")
 
-(defcustom sticky-shell-supported-modes
+(defun sticky-shell--get-compile-command (&rest _)
+  (if (boundp 'compile-command)
+      compile-command
+    (progn
+      (warn "sticky-shell: `compile-command' is an unbound variable.")
+      nil)))
+
+(defcustom sticky-shell-supported-minor-modes
+  (list
+   'compilation-shell-minor-mode #'sticky-shell--get-compile-command)
+  "Property-list: each supported mode paired with its previous-prompt function.
+This list is checked by `sticky-shell-mode' when setting the value of
+`sticky-shell-previous-prompt-function'.
+Note that some of these functions, like `vterm-previous-prompt',
+require you to set the prompt's regexp first.
+See the functions' own documentation for more info"
+  :group 'sticky-shell
+  :type 'plist)
+
+(defcustom sticky-shell-supported-major-modes
   (list
    'eshell-mode #'eshell-previous-prompt
-   'comint-mode #'comint-previous-prompt
    'term-mode #'term-previous-prompt
-   'vterm-mode #'vterm-previous-prompt)
+   'vterm-mode #'vterm-previous-prompt
+   'compilation-mode #'sticky-shell--get-compile-command
+   ;; NOTE keep `comint-mode' last: if a more specific mode derives from
+   ;; `comint-mode', we should take its specific function rather than the
+   ;; generic solution
+   'comint-mode #'comint-previous-prompt)
   "Property-list: each supported mode paired with its previous-prompt function.
 This list is checked by `sticky-shell-mode' when setting the value of
 `sticky-shell-previous-prompt-function'.
@@ -105,6 +128,11 @@ See the functions' own documentation for more info"
   #'comint-previous-prompt
   "Variable storing the function called to retrieve the previous propmt.
 Varies depending on which mode the current major-mode is derived from.")
+
+(defvar sticky-shell-default-prompt-function
+  #'comint-previous-prompt
+  ;; TODO docstring
+  "TK")
 
 (defface sticky-shell-shorten-header-ellipsis
   '((t :inherit default))
@@ -209,16 +237,32 @@ if you want your header to default to shortened."
   (sticky-shell-shorten-header-mode
    (or (bound-and-true-p sticky-shell-mode) -1)))
 
-(defun sticky-shell--get-func-for-derived-mode (iter-modes)
+(defun sticky-shell--get-func-for-major-mode (iter-modes default)
   "Recursively iterate through ITER-MODES, a plist of (mode:
 previous-prompt-function) until you find a mode that the current mode
   derives from.  Return the previous-prompt function for that mode.
 If not found, default to `comint-previous-prompt'."
   (if (not iter-modes)
-      #'comint-previous-prompt
+      default
     (if (derived-mode-p (car iter-modes))
         (cadr iter-modes)
-      (sticky-shell--get-func-for-derived-mode (cddr iter-modes)))))
+      (sticky-shell--get-func-for-major-mode (cddr iter-modes) default))))
+
+(defun sticky-shell--get-func-for-minor-mode (iter-modes &optional default)
+  "TK"
+  (if (not iter-modes)
+      default
+    ;; TODO add a catch for the error thrown when the minor-mode variable is unbound
+    (if (eval (car iter-modes))
+        (cadr iter-modes)
+      (sticky-shell--get-func-for-minor-mode (cddr iter-modes) default))))
+
+(defun sticky-shell--get-prompt-function-for-mode-setup ()
+  (or (sticky-shell--get-func-for-minor-mode
+       sticky-shell-supported-minor-modes)
+      (sticky-shell--get-func-for-major-mode
+       sticky-shell-supported-major-modes)
+      sticky-shell-default-prompt-function))
 
 ;;;; modes
 ;;;###autoload
@@ -235,8 +279,7 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
                   ;; the function we use to get the previous prompt
                   ;; depends on the current mode:
                   sticky-shell-previous-prompt-function
-                  (sticky-shell--get-func-for-derived-mode
-                   sticky-shell-supported-modes))
+                  (sticky-shell--get-prompt-function-for-mode-setup))
     (setq-local header-line-format nil
                 sticky-shell-shorten-header-mode nil)))
 
@@ -247,7 +290,7 @@ Which prompt to pick depends on the value of `sticky-shell-get-prompt'."
 (defun sticky-shell--global-on ()
   "Enable `sticky-shell-mode' if appropriate for the buffer."
   (when (plist-get
-         sticky-shell-supported-modes nil
+         sticky-shell-supported-major-modes nil
          (lambda (mode _ignored_arg)
            (derived-mode-p mode)))
     (sticky-shell-mode +1)))
