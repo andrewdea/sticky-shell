@@ -85,13 +85,18 @@ or you can write your own function and assign it to this variable."
 (declare-function comint-previous-prompt "ext:comint")
 (declare-function term-previous-prompt "ext:term")
 (declare-function vterm-previous-prompt "ext:vterm")
+;; NOTE `ghostel-previous-prompt' enters "emacs mode" which creates issues in
+;; our case, since we call it frequently every time we update the header.
+;; Therefore we use the internal `ghostel--navigate-previous-prompt'
+(declare-function ghostel--navigate-previous-prompt "ext:ghostel")
 
 (defcustom sticky-shell-supported-modes
   (list
    'eshell-mode #'eshell-previous-prompt
    'comint-mode #'comint-previous-prompt
    'term-mode #'term-previous-prompt
-   'vterm-mode #'vterm-previous-prompt)
+   'vterm-mode #'vterm-previous-prompt
+   'ghostel-mode #'ghostel--navigate-previous-prompt)
   "Property-list: each supported mode paired with its previous-prompt function.
 This list is checked by `sticky-shell-mode' when setting the value of
 `sticky-shell-previous-prompt-function'.

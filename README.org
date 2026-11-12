@@ -17,7 +17,7 @@
  - In any shell within Emacs, run *M-x* =sticky-shell-mode= to enable the mode locally.
  - To enable the mode for all shell buffers, run *M-x* =sticky-shell-global-mode=.
 
-The mode should work in any shell that inherits: =eshell-mode=, =comint-mode=, =vterm-mode=, =term-mode=. It should be easy to add support for additional modes (see =sticky-shell-supported-modes=).
+The mode should work in any shell that inherits: =eshell-mode=, =comint-mode=, =vterm-mode=, =term-mode=, =ghostel-mode=. It should be easy to add support for additional modes (see =sticky-shell-supported-modes=).
 
 If you'd like to add better support for any additional modes, please let me know.
 
