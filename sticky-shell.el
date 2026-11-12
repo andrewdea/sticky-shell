@@ -90,6 +90,7 @@ or you can write your own function and assign it to this variable."
 ;; Therefore we use the internal `ghostel--navigate-previous-prompt'
 (declare-function ghostel--navigate-previous-prompt "ext:ghostel")
 
+;;;###autoload
 (defcustom sticky-shell-supported-modes
   (list
    'eshell-mode #'eshell-previous-prompt
